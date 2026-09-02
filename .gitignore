@@ -1,10 +1,13 @@
+# Local Database & Docker Volumes
 app_data/
+*.db
+*.db-shm
+*.db-wal
+
+# Build Artifacts
 bin/
 obj/
 .vs/
 *.user
 *.suo
-*.db
-*.db-shm
-*.db-wal
 *.log
