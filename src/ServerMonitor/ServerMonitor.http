@@ -1,0 +1,16 @@
+@ServerMonitor_HostAddress = http://localhost:5132
+
+GET {{ServerMonitor_HostAddress}}/api/metrics/server-1
+Accept: application/json
+
+###
+
+POST {{ServerMonitor_HostAddress}}/api/metrics
+Content-Type: application/json
+
+{
+  "serverName": "server-1",
+  "cpuUsagePercent": 42.5,
+  "memoryUsageMb": 2048,
+  "timestamp": "2025-01-01T00:00:00Z"
+}
