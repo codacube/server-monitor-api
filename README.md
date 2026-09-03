@@ -137,8 +137,8 @@ docker run -d \
   --name server-monitor-app \
   --hostname "docker-telemetry-node" \
   -p 5000:8080 \
-  -e ConnectionStrings__DefaultConnection="Data Source=/app/data/server-monitor.db" \
-  -v $(pwd)/app_data:/app/data \
+  -e "ConnectionStrings__ServerMonitor=Data Source=/app/data/server-monitor.db" \
+  -v "$(PWD)/app_data:/app/data" \
   server-monitor
 ```
 
@@ -169,3 +169,7 @@ dotnet test .\ServerMonitor.Tests\ServerMonitor.Tests.csproj --nologo
 // Test a class or filter
 dotnet test .\ServerMonitor.Tests\ServerMonitor.Tests.csproj --filter CreateMetricRequestValidatorTests
 ```
+
+# Run the client
+
+`dotnet run --project src/ServerMonitor.Client`

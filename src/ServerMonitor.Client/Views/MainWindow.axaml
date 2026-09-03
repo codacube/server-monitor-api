@@ -1,0 +1,48 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+        xmlns:vm="using:ServerMonitor.Client.ViewModels"
+        x:Class="ServerMonitor.Client.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Server Telemetry Dashboard" Width="950" Height="600"
+        WindowStartupLocation="CenterScreen">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto, *, Auto" Margin="20">
+        <!-- Control Panel -->
+        <StackPanel Grid.Row="0" Spacing="12" Margin="0,0,0,20">
+            <TextBlock Text="Server Telemetry Dashboard" FontSize="22" FontWeight="Bold"/>
+
+            <WrapPanel HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal" Margin="0,0,15,5">
+                    <TextBlock Text="Server Name:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox Text="{Binding TargetServer}" Width="140"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,15,5">
+                    <TextBlock Text="CPU %:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <NumericUpDown Value="{Binding InputCpu}" Minimum="0" Maximum="100" Width="120"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,15,5">
+                    <TextBlock Text="RAM (MB):" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <NumericUpDown Value="{Binding InputMemory}" Minimum="0" Maximum="65536" Width="130"/>
+                </StackPanel>
+
+                <Button Content="Post Metric" Command="{Binding SendMetricCommand}" Margin="0,0,8,5"/>
+                <Button Content="Refresh Chart" Command="{Binding FetchMetricsCommand}" Margin="0,0,8,5"/>
+            </WrapPanel>
+        </StackPanel>
+
+        <!-- Chart -->
+        <Border Grid.Row="1" BorderBrush="#33ffffff" BorderThickness="1" CornerRadius="6" Padding="12">
+            <lvc:CartesianChart Series="{Binding CpuSeries}" XAxes="{Binding XAxes}" />
+        </Border>
+
+        <!-- Status Bar -->
+        <TextBlock Grid.Row="2" Text="{Binding StatusMessage}" Margin="0,10,0,0" Foreground="Gray"/>
+    </Grid>
+</Window>
