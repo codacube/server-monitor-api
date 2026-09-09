@@ -173,3 +173,20 @@ dotnet test .\ServerMonitor.Tests\ServerMonitor.Tests.csproj --filter CreateMetr
 # Run the client
 
 `dotnet run --project src/ServerMonitor.Client`
+
+# Test Server API Key
+
+```bash
+# Without Valid API Key
+curl -i -X POST http://localhost:5000/api/metrics \
+  -H "Content-Type: application/json" \
+  -d '{"serverName":"prod-web-01","cpuUsagePercent":45.0,"memoryUsageMb":4096.0}'
+```
+
+```bash
+# With Valid API Key
+curl -i -X POST http://localhost:5000/api/metrics \
+  -H "Content-Type: application/json" \
+  -H "X-API-KEY: Telemetry-Secret-Key-98765" \
+  -d '{"serverName":"prod-web-01","cpuUsagePercent":45.0,"memoryUsageMb":4096.0}'
+```

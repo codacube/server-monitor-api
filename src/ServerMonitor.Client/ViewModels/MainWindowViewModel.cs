@@ -22,7 +22,7 @@ public partial class MainWindowViewModel : ObservableObject
     };
 
     private readonly ObservableCollection<DateTimePoint> _cpuValues = new();
-    private readonly DispatchTimer _pollTimer;
+    private readonly DispatcherTimer _pollTimer;
 
     [ObservableProperty] private string _targetServer = "docker-telemetry-node";
     [ObservableProperty] private double _inputCpu = 85.5;
@@ -52,11 +52,11 @@ public partial class MainWindowViewModel : ObservableObject
         _ = FetchMetricsAsync();
 
         // Update graph every 3 seconds
-        _pollTimer = new DispatchTimer;
+        _pollTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(3)
         };
-        _pollTimer.tick += async (sender, e) => await FetchMetricsAsync();
+        _pollTimer.Tick += async (sender, e) => await FetchMetricsAsync();
         _pollTimer.Start();
     }
 
