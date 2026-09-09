@@ -23,6 +23,11 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,15,5">
+                    <TextBlock Text="Port:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <NumericUpDown Value="{Binding ServerPort}" Minimum="1" Maximum="65535" Width="140" FormatString="0"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,15,5">
                     <TextBlock Text="CPU %:" VerticalAlignment="Center" Margin="0,0,8,0"/>
                     <NumericUpDown Value="{Binding InputCpu}" Minimum="0" Maximum="100" Width="120"/>
                 </StackPanel>

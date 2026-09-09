@@ -17,14 +17,14 @@ public partial class MainWindowViewModel : ObservableObject
 {
     private readonly HttpClient _http = new()
     {
-        BaseAddress = new Uri("http://localhost:5000/"),
         DefaultRequestHeaders = { { "X-API-KEY", "Telemetry-Secret-Key-98765" } }
     };
 
     private readonly ObservableCollection<DateTimePoint> _cpuValues = new();
     private readonly DispatcherTimer _pollTimer;
 
-    [ObservableProperty] private string _targetServer = "docker-telemetry-node";
+    [ObservableProperty] private string _targetServer = Environment.MachineName;
+    [ObservableProperty] private int _serverPort = 5000;
     [ObservableProperty] private double _inputCpu = 85.5;
     [ObservableProperty] private double _inputMemory = 8192.0;
     [ObservableProperty] private string _statusMessage = "Ready";
@@ -54,7 +54,7 @@ public partial class MainWindowViewModel : ObservableObject
         // Update graph every 3 seconds
         _pollTimer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromSeconds(3)
+            Interval = TimeSpan.FromSeconds(20)
         };
         _pollTimer.Tick += async (sender, e) => await FetchMetricsAsync();
         _pollTimer.Start();
@@ -66,7 +66,7 @@ public partial class MainWindowViewModel : ObservableObject
         try
         {
             StatusMessage = $"Fetching telemetry for '{TargetServer}'...";
-            var response = await _http.GetFromJsonAsync<MetricDto[]>($"api/metrics/{TargetServer}");
+            var response = await _http.GetFromJsonAsync<MetricDto[]>(BuildApiUri($"api/metrics/{TargetServer}"));
 
             _cpuValues.Clear();
             if (response is not null)
@@ -91,7 +91,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             StatusMessage = "Posting telemetry...";
             var payload = new CreateMetricDto(TargetServer, InputCpu, InputMemory, DateTime.UtcNow);
-            var response = await _http.PostAsJsonAsync("api/metrics", payload);
+            var response = await _http.PostAsJsonAsync(BuildApiUri("api/metrics"), payload);
 
             if (response.IsSuccessStatusCode)
             {
@@ -107,5 +107,10 @@ public partial class MainWindowViewModel : ObservableObject
         {
             StatusMessage = $"Send error: {ex.Message}";
         }
+    }
+
+    private Uri BuildApiUri(string path)
+    {
+        return new Uri($"http://localhost:{ServerPort}/{path}");
     }
 }

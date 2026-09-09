@@ -10,7 +10,7 @@ public sealed class TelemetryAlertWorker(
     IConfiguration configuration,
     ILogger<TelemetryAlertWorker> logger) : BackgroundService
 {
-    private static readonly TimeSpan CycleInterval = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan CycleInterval = TimeSpan.FromSeconds(15);
     private static readonly TimeSpan CpuSampleInterval = TimeSpan.FromSeconds(1);
     private const double DefaultCpuThresholdPercent = 80;
 
