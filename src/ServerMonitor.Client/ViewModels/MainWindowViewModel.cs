@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiveChartsCore;
@@ -17,10 +18,11 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly HttpClient _http = new()
     {
         BaseAddress = new Uri("http://localhost:5000/"),
-        // DefaultRequestHeaders = { { "X-API-KEY", "Telemetry-Secret-Key-98765" } }
+        DefaultRequestHeaders = { { "X-API-KEY", "Telemetry-Secret-Key-98765" } }
     };
 
     private readonly ObservableCollection<DateTimePoint> _cpuValues = new();
+    private readonly DispatchTimer _pollTimer;
 
     [ObservableProperty] private string _targetServer = "docker-telemetry-node";
     [ObservableProperty] private double _inputCpu = 85.5;
@@ -46,7 +48,16 @@ public partial class MainWindowViewModel : ObservableObject
             }
         };
 
+        // Initial fetch
         _ = FetchMetricsAsync();
+
+        // Update graph every 3 seconds
+        _pollTimer = new DispatchTimer;
+        {
+            Interval = TimeSpan.FromSeconds(3)
+        };
+        _pollTimer.tick += async (sender, e) => await FetchMetricsAsync();
+        _pollTimer.Start();
     }
 
     [RelayCommand]

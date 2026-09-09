@@ -44,7 +44,9 @@ app.MapPost("/api/metrics", async (CreateMetricRequest request, ServerMonitorDbC
     await dbContext.SaveChangesAsync();
 
     return Results.Created($"/api/metrics/{metric.ServerName}", metric);
-}).AddEndpointFilter<ValidationFilter<CreateMetricRequest>>();
+})
+.AddEndpointFilter<ValidationFilter<CreateMetricRequest>>()
+.AddEndpointFilter<ApiKeyFilter>();
 
 app.MapGet("/api/metrics/{serverName}", async (string serverName, ServerMonitorDbContext dbContext) =>
 {
